@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<body>
+<h1>HTML5 Canvas</h1>
+<h2>The arc() Method</h2>
+
+<canvas id="myCanvas" width="1000" height="500" style="border:1px solid grey"></canvas>
+
+<script>
+    function sides_to_angle(a,b,c){ // z twierdzenia cosinusów c**2 = a**2 + b**2 - 2*a*b*cos(angle)
+        let ab2cos = a**2 + b**2 - c**2
+        return Math.acos(ab2cos / (2*a*b))
+    }
+
+    class Polar {
+        constructor(radius, angle){
+            this.radius = radius
+            this.angle = angle
+        }
+        x(){
+            return this.radius * Math.cos(this.angle)
+        }
+        y(){
+            return this.radius * Math.sin(this.angle)
+        }
+        vec(){
+            return [this.x(), this.y()]
+        }
+    }
+    class Dent {
+        constructor(parent, polar, radius){
+            this.radius = radius
+            this.center = polar
+            this.parent = parent
+        }
+        angles(){
+            let half_angle_size = sides_to_angle(this.center.radius, this.radius, this.parent.radius)
+            if(this.radius + this.center.radius > this.parent.radius){
+                half_angle_size = Math.PI - half_angle_size
+            }
+            return [this.center.angle - half_angle_size, this.center.angle + half_angle_size]
+        }
+        parent_angles(){
+            let half_angle_size = sides_to_angle(this.center.radius, this.parent.radius, this.radius)
+            return [this.center.angle - half_angle_size, this.center.angle + half_angle_size]
+        }
+    }
+
+
+    const c = document.getElementById("myCanvas");
+    const ctx = c.getContext("2d");
+    center = [500,250]
+    ring = {
+        radius: 150,
+        dents: [],
+    }
+    ring.dents.push(new Dent(ring, new Polar(190, 1.1), 120))
+
+    ctx.beginPath();
+    let first = true
+    let start_position = 0
+    let arc_begin = start_position
+    let n_dents = ring.dents.lenght
+    for i in Range(n_dents){
+
+    }
+    // if( n_dents > 1){
+    //     let dent = ring.dents[0]
+    //     dent_angles = dent.angles();
+    //     start_position = dent.parent_angles()[0]
+    //     arc_begin = dent.parent_angles()[1]
+    //     ctx.arc(center[0] + dent.center.x(), center[1] + dent.center.y(), dent.radius, dent_angles[0], dent_angles[1],1);
+    // }
+
+    // ring.dents[1].forEach(dent => {
+    //     ring_angles = dent.parent_angles();
+    //     dent_angles = dent.angles();
+    //     // console.log(center + dent.center.x(), center + dent.center.y(), dent.radius, dent_angles[0], dent_angles[1]);
+        
+    //     ctx.arc(center[0] + dent.center.x(), center[1] + dent.center.y(), dent.radius, dent_angles[0], dent_angles[1],1);
+    //     ctx.arc(center[0], center[1], ring.radius, arc_begin, ring_angles[1]);
+
+    //     arc_begin = ring_angles[1]
+    // });
+    // ctx.beginPath();
+    // if (overlaps_begin) {
+        ctx.arc(center[0], center[1], ring.radius, arc_begin, 0);
+    // }
+    ctx.stroke();
+
+    // ctx.arc(200, 75, 50, 0, 0.5 * Math.PI);
+</script> 
+
+</body>
+</html>
