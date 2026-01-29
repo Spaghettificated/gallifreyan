@@ -2,16 +2,26 @@ function xy_to_polar(x,y){
     return []
 }
 function polar_to_x(r, angle){
-	r * Math.sin(this.angle)
+	return r * Math.sin(angle)
 }
 function polar_to_y(r, angle){
-	r * Math.cos(this.angle)
+	return r * Math.cos(angle)
 }
 function polar_to_xy(r, angle){
     return [polar_to_x(r, angle), polar_to_y(r, angle)]
 }
 function to_canvas_angle(angle){
-	return angle - Math.PI / 2
+	// let n = Math.round(angle / (2*Math.PI))
+	// let rest = angle - n * 2 * Math.PI
+	// return Math.PI / 2 - rest + n * 2 * Math.PI
+	return Math.PI / 2 - angle
+}
+function drawArc(ctx, x, y, r, sAngle, eAngle, counterclockwise=false){
+	ctx.beginPath()
+	ctx.moveTo(x + polar_to_x(r, eAngle), y + polar_to_y(r, eAngle))
+	ctx.arc(x, y, r, to_canvas_angle(eAngle), to_canvas_angle(sAngle), counterclockwise)
+	// ctx.arc(x, y, r, to_canvas_angle(eAngle), to_canvas_angle(sAngle), counterclockwise)
+	ctx.stroke()
 }
 function to_rad(degrees){
 	return Math.PI * degrees / 180
@@ -30,10 +40,10 @@ class PolarPoint{
         this.angle = angle
     }
 	get x(){
-		return polar_to_x(this.r, this.angle)
+		return this.origin.x + polar_to_x(this.r, this.angle)
 	}
 	get y(){
-		return polar_to_y(this.r, this.angle)
+		return this.origin.y + polar_to_y(this.r, this.angle)
 	}
 }
 class Ring{
@@ -48,11 +58,11 @@ class Ring{
 		return new RingPoint(this, r, angle)
 	}
 	draw(ctx){
-    	ctx.beginPath()
 		var start = this.pointFromEdge(0, 0)
-		ctx.moveTo(start.x, start.y)
-		ctx.arc(this.center.x, this.center.y, this.r, 0, to_rad(360))
-		ctx.stroke()
+		// ctx.moveTo(start.x, start.y)
+		// ctx.arc(this.center.x, this.center.y, this.r, to_canvas_angle(0), to_canvas_angle(to_rad(135)))
+		drawArc(ctx, this.center.x, this.center.y, this.r, to_rad(0), to_rad(360))
+
 	}
 }
 class RingPoint{
@@ -69,6 +79,16 @@ class RingPoint{
 	}
 }
 
+function distance(a, b){
+	return Math.sqrt( (b.x - a.x)**2 + (b.y - a.y)**2 )
+}
+
+
+function sides_to_angle(a,b,c){ // z twierdzenia cosinusów c**2 = a**2 + b**2 - 2*a*b*cos(angle)
+    let ab2cos = a**2 + b**2 - c**2
+    return Math.acos(ab2cos / (2*a*b))
+}
+
 class Dent {
     constructor(parent, start, end, depth){
         // this.radius = radius
@@ -81,27 +101,46 @@ class Dent {
 		return this.parent.pointFromEdge(0, this.start)
 	}
 	endPoint(){
-		return this.parent.pointFromEdge(0, this.start)
+		return this.parent.pointFromEdge(0, this.end)
 	}
 	length(){
 		var s = this.startPoint()
 		var e = this.endPoint()
-		return (e.x-s.x)**2 + (e.y-s.y)**2
+		return distance(s,e)
 	}
 	get r(){
-		return this.ring.r
+		var l = this.length() / 2
+		return ((l**2) / (2*this.depth)) + this.depth/2
 	}
-    angles(){
-        let half_angle_size = sides_to_angle(this.center.radius, this.radius, this.parent.radius)
-        if(this.radius + this.center.radius > this.parent.radius){
-            half_angle_size = Math.PI - half_angle_size
+	get center(){
+		// let midPoint = 
+		let distToFlat = Math.sqrt(this.parent.r**2 - (this.length()/2)**2)
+		return this.parent.pointFromCenter(distToFlat - this.depth + this.r, (this.start + this.end) / 2)
+		// return this.parent.pointFromEdge(this.depth - this.r, (this.start + this.end) / 2)
+	}
+    insideAngles(){ // kąty początku i końca wcięcia względem samego wcięcia, a nie całego pierścienia
+        let half_angle_size = sides_to_angle(this.r, Math.abs(this.r - this.depth), this.length()/2)
+        console.log('size', half_angle_size, this.r, this.depth, this.length()/2)
+		var mid_angle = (this.start + this.end) / 2
+		if(this.r  > this.depth){
+            mid_angle = mid_angle + to_rad(180)
         }
-        return [this.center.angle - half_angle_size, this.center.angle + half_angle_size]
+        return [mid_angle - half_angle_size, mid_angle + half_angle_size]
     }
-    parent_angles(){
-        let half_angle_size = sides_to_angle(this.center.radius, this.parent.radius, this.radius)
-        return [this.center.angle - half_angle_size, this.center.angle + half_angle_size]
-    }
+	draw(){
+		// ctx.beginPath()
+		// ctx.moveTo(start.x, start.y)
+		var start = this.startPoint()
+		var angles = this.insideAngles()
+		// ctx.arc(this.center.x, this.center.y, this.r, to_canvas_angle(angles[0]), to_canvas_angle(angles[1]))
+		drawArc(ctx, this.center.x, this.center.y, this.r, angles[0], angles[1], this.r  < this.depth)
+		console.log('dent', angles)
+		// console.log('dent', polar_to_x(start.ring.r - start.r, start.angle))
+		// console.log('dent', polar_to_x(1,1))
+		
+		// ctx.arc(10, 20, 30, 0, 1)
+		// ctx.stroke()
+	}
 }
 
 // class Dent {
@@ -130,10 +169,6 @@ class Dent {
 
 
 
-function sides_to_angle(a,b,c){ // z twierdzenia cosinusów c**2 = a**2 + b**2 - 2*a*b*cos(angle)
-    let ab2cos = a**2 + b**2 - c**2
-    return Math.acos(ab2cos / (2*a*b))
-}
 
 class Polar {
     constructor(radius, angle){
