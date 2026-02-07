@@ -65,12 +65,12 @@ class Ring {
 		console.log(this.dents)
 		var start = this.pointFromEdge(0, 0)
 		ctx.moveTo(start.x, start.y)
-		var startAngle = -to_rad(360)
+		var startAngle = -to_rad(360) * 10000
 		var currentAngle = startAngle
-		var endAngle = to_rad(360)
+		var endAngle = to_rad(360) * 10000
 		var still_drawing = true
 		while(still_drawing){
-			var minAngle = to_rad(360)
+			var minAngle = to_rad(360) * 10000
 			var minDent = 0;
 			this.dents.forEach(dent => {
 				if(dent.start > currentAngle && dent.start < minAngle){

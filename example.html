@@ -9,6 +9,9 @@
 <script>
     const c = document.getElementById("myCanvas");
     const ctx = c.getContext("2d");
+    const crect = c.getBoundingClientRect();
+    ctx.lineWidth = 8
+    ctx.lineCap = "round"; // butt round square
     center = new Point(500, 250);
     ring = new Ring(center, 100);
     // dent = new Dent(ring, 0, to_rad(40), 6);
@@ -17,6 +20,38 @@
     ring.addDent( to_rad(270), to_rad(290), 30)
     ring.draw(ctx);
     // dent.draw(ctx);
+    var mouse = new Point(0,0)
+
+    c.addEventListener("mousemove", function(e) {
+        mouse.x = e.clientX - crect.left;
+        mouse.y = e.clientY - crect.top;
+    });
+
+
+    let start = Date.now(); // remember start time
+    let timer = setInterval(function() {
+        // how much time passed from the start?
+        ctx.strokeStyle = "black"
+        ctx.clearRect(0, 0, c.width, c.height);
+        ring.dents.forEach(dent => {
+            dent.start += 0.01
+            dent.end += 0.01
+        });
+        // ring.dents[0].end += 0.01;
+        ring.draw(ctx);
+        let timePassed = Date.now() - start;
+
+        // if (timePassed >= 2000) {
+        //     clearInterval(timer); // finish the animation after 2 seconds
+        //     return;
+        // }
+        ctx.strokeStyle = "red"
+        ctx.beginPath();
+        ctx.arc(mouse.x, mouse.y, 2, 0, 2 * Math.PI);
+        ctx.stroke(); 
+
+    }, 20);
+    
 
     // ctx.beginPath();
     // // ctx.moveTo(center.x, center.y);
