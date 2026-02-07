@@ -7,17 +7,16 @@
 <canvas id="myCanvas" width="1000" height="500" style="border:1px solid grey"></canvas>
 <script src="shapes.js"></script>
 <script>
-    
-
-
-
     const c = document.getElementById("myCanvas");
     const ctx = c.getContext("2d");
     center = new Point(500, 250);
     ring = new Ring(center, 100);
+    // dent = new Dent(ring, 0, to_rad(40), 6);
+    ring.addDent( to_rad(40), to_rad(60), 6)
+    ring.addDent( to_rad(140), to_rad(230), 10)
+    ring.addDent( to_rad(270), to_rad(290), 30)
     ring.draw(ctx);
-    dent = new Dent(ring, 0, to_rad(40), 6);
-    dent.draw(ctx);
+    // dent.draw(ctx);
 
     // ctx.beginPath();
     // // ctx.moveTo(center.x, center.y);
