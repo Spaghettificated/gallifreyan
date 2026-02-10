@@ -16,13 +16,31 @@
             background-color: #f9f9f9;
             margin-top: 20px;
         }
+        .mode-button {
+            padding: 8px 10px;
+            background: #efefef;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .mode-button.active {
+            background: #4CAF50;
+            color: white;
+        }
     </style>
 </head>
 <body>
     <h1>HTML5 Canvas</h1>
     <h2>Metoda arc() i twierdzenie cosinusów</h2>
     
-    <canvas id="myCanvas" width="1000" height="500"></canvas>
+    <div style="display:flex; align-items:flex-start; gap:12px; margin-top:20px;">
+        <div id="modeColumn" style="display:flex; flex-direction:column; gap:8px; margin-right:12px;">
+            <button class="mode-button" data-mode="mode1">mode1</button>
+            <button class="mode-button" data-mode="mode2">mode2</button>
+            <button class="mode-button" data-mode="mode3">mode3</button>
+        </div>
+        <canvas id="myCanvas" width="1000" height="500"></canvas>
+    </div>
 
     <script src="script.js"></script>
 </body>
