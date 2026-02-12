@@ -1,5 +1,11 @@
+function xy_to_radius(x, y) {
+	return Math.sqrt(x**2 + y**2)
+}
+function xy_to_angle(x, y) {
+	return Math.PI - Math.atan2(x,y)
+}
 function xy_to_polar(x, y) {
-	return []
+	return [xy_to_radius(x, y), xy_to_angle(x, y)]
 }
 function polar_to_x(r, angle) {
 	return r * Math.sin(angle)

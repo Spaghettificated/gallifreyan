@@ -2,7 +2,6 @@
 <html>
 <body>
 <h1>Gallifreyan scribe</h1>
-<h2>The arc() Method</h2>
  
 
 <div style="display:flex; align-items:flex-start; gap:12px;">
@@ -24,15 +23,17 @@
     const crect = c.getBoundingClientRect();
     ctx.lineWidth = 8
     ctx.lineCap = "round"; // butt round square
-    center = new Point(500, 250);
+    center = new Point(200, 250);
     ring = new Ring(center, 100);
     // dent = new Dent(ring, 0, to_rad(40), 6);
     ring.addDent( to_rad(40), to_rad(60), 6)
-    ring.addDent( to_rad(140), to_rad(230), 10)
-    ring.addDent( to_rad(270), to_rad(290), 30)
+    // ring.addDent( to_rad(140), to_rad(230), 10)
+    // ring.addDent( to_rad(270), to_rad(290), 30)
     ring.draw(ctx);
     // dent.draw(ctx);
     var mouse = new Point(0,0)
+    var orbit = new PolarPoint(center, 120, 1)
+    var moon = new Ring(orbit, 3);
 
     c.addEventListener("mousemove", function(e) {
         mouse.x = e.clientX - crect.left;
@@ -43,17 +44,26 @@
     let start = Date.now(); // remember start time
     let timer = setInterval(function() {
         // how much time passed from the start?
+        let a = xy_to_angle(center.x - mouse.x, center.y - mouse.y)
+        d = ring.dents[0]
+        dr = (d.end - d.start)/2.
+        d.start = a-dr
+        d.end = a+dr
+        // ring.dents[0].start = a
+        orbit.angle = a
+        console.log('a ', a )
         ctx.strokeStyle = "black"
         if(drawMode == "mode1"){
             ctx.strokeStyle = "blue"
         }
         ctx.clearRect(0, 0, c.width, c.height);
-        ring.dents.forEach(dent => {
-            dent.start += 0.01
-            dent.end += 0.01
-        });
+        // ring.dents.forEach(dent => {
+        //     dent.start += 0.01
+        //     dent.end += 0.01
+        // });
         // ring.dents[0].end += 0.01;
-        ring.draw(ctx);
+        ring.draw(ctx)
+        moon.draw(ctx)
         let timePassed = Date.now() - start;
 
         // if (timePassed >= 2000) {
