@@ -1,11 +1,11 @@
-function xy_to_radius(x, y) {
+function xy_to_r(x, y) {
 	return Math.sqrt(x**2 + y**2)
 }
 function xy_to_angle(x, y) {
-	return Math.PI - Math.atan2(x,y)
+	return Math.PI + Math.atan2(x,y)
 }
 function xy_to_polar(x, y) {
-	return [xy_to_radius(x, y), xy_to_angle(x, y)]
+	return [xy_to_r(x, y), xy_to_angle(x, y)]
 }
 function polar_to_x(r, angle) {
 	return r * Math.sin(angle)
@@ -64,11 +64,18 @@ class Ring {
 	pointFromEdge(r, angle) {
 		return new RingPoint(this, r, angle)
 	}
+	pointAsCenterAttached(point){
+		let [r, angle] = xy_to_polar(this.center.x - point.x, this.center.y - point.y)
+		return this.pointFromCenter(r, angle)
+	}
+	pointAsRingAttached(point){
+		let [r, angle] = xy_to_polar(this.center.x - point.x, this.center.y - point.y)
+		return this.pointFromEdge(this.r - r, angle)
+	}
 	addDent(sAngle, eAngle, depth) {
 		this.dents.push(new Dent(this, sAngle, eAngle, depth))
 	}
 	draw(ctx) {
-		console.log(this.dents)
 		var start = this.pointFromEdge(0, 0)
 		ctx.moveTo(start.x, start.y)
 		var startAngle = -to_rad(360) * 10000
@@ -88,28 +95,18 @@ class Ring {
 					minDent = dent
 				}
 			})	
-			console.log(minDent)
 			if(minDent == 0){
 				still_drawing = false
 			}
 			else{
 				if(currentAngle > -to_rad(360)){
-					// console.log(currentAngle, minDent.start)
 					drawArc(ctx, this.center.x, this.center.y, this.r, currentAngle, minDent.start)
 				}
 				currentAngle = minDent.end	
 				minDent.draw(ctx)
 			}
 		}
-		// console.log(to_rad(40), startAngle, this.dents[0].start)
 		drawArc(ctx, this.center.x, this.center.y, this.r, endAngle, startAngle)
-		// drawArc(ctx, this.center.x, this.center.y, this.r, endAngle, to_rad(40))
-		// drawArc(ctx, this.center.x, this.center.y, this.r, startAngle, endAngle )
-		// drawArc(ctx, this.center.x, this.center.y, this.r, startAngle, endAngle )
-		// this.dents.forEach(dent => {
-		// 	dent.draw(ctx)
-		// });
-		// drawArc(ctx, this.center.x, this.center.y, this.r, to_rad(0), to_rad(360))
 
 	}
 }
@@ -124,6 +121,24 @@ class RingPoint {
 	}
 	get y() {
 		return this.ring.center.y + polar_to_y(this.ring.r - this.r, this.angle)
+	}
+}
+
+class Dot {
+	constructor(center, r) {
+		this.center = center
+		this.r = r
+	}
+	pointFromCenter(r, angle) {
+		return new PolarPoint(this.center, r, angle)
+	}
+	pointFromEdge(r, angle) {
+		return new RingPoint(this, r, angle)
+	}
+	draw(ctx) {
+		ctx.beginPath()
+		ctx.arc(this.center.x, this.center.y, this.r, 0, 2*Math.PI)
+		ctx.fill()
 	}
 }
 
@@ -168,7 +183,6 @@ class Dent {
 	}
 	insideAngles() { // kąty początku i końca wcięcia względem samego wcięcia, a nie całego pierścienia
 		let half_angle_size = sides_to_angle(this.r, Math.abs(this.r - this.depth), this.length() / 2)
-		// console.log('size', half_angle_size, this.r, this.depth, this.length() / 2)
 		var mid_angle = (this.start + this.end) / 2
 		if (this.r > this.depth) {
 			mid_angle = mid_angle + to_rad(180)
@@ -182,9 +196,6 @@ class Dent {
 		var angles = this.insideAngles()
 		// ctx.arc(this.center.x, this.center.y, this.r, to_canvas_angle(angles[0]), to_canvas_angle(angles[1]))
 		drawArc(ctx, this.center.x, this.center.y, this.r, angles[0], angles[1], this.r < this.depth)
-		// console.log('dent', angles)
-		// console.log('dent', polar_to_x(start.ring.r - start.r, start.angle))
-		// console.log('dent', polar_to_x(1,1))
 
 		// ctx.arc(10, 20, 30, 0, 1)
 		// ctx.stroke()
