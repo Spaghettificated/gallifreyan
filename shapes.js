@@ -73,7 +73,8 @@ class Ring {
 		return this.pointFromEdge(this.r - r, angle)
 	}
 	addDent(sAngle, eAngle, depth) {
-		this.dents.push(new Dent(this, sAngle, eAngle, depth))
+		this.dents.push(new Dent(this, sAngle, eAngle, depth)) 
+		return this.dents.length - 1
 	}
 	draw(ctx) {
 		var start = this.pointFromEdge(0, 0)
@@ -174,6 +175,17 @@ class Dent {
 	get r() {
 		var l = this.length() / 2
 		return ((l ** 2) / (2 * this.depth)) + this.depth / 2
+		// return ((l ** 2) + (this.depth ** 2)) / (2 * this.depth) 
+	}
+	set r(r){
+		// TODO: how to set this this doesnt work
+		var l = this.length() / 2
+		this.depth = 2 * r 
+		// this.depth += Math.sqrt(r**2 - l**2) 
+
+		// let [s,e] = this.insideAngles()
+		// let theta = (e - s) / 2
+		// this.depth = (Math.sin(theta)) * r
 	}
 	get center() {
 		// let midPoint = 

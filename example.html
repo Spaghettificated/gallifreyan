@@ -27,7 +27,7 @@
     center = new Point(250, 250);
     ring = new Ring(center, 200);
     // dent = new Dent(ring, 0, to_rad(40), 6);
-    ring.addDent( to_rad(40), to_rad(60), 16)
+    ring.addDent( to_rad(40), to_rad(60), 20)
     // ring.addDent( to_rad(140), to_rad(230), 10)
     // ring.addDent( to_rad(270), to_rad(290), 30)
     // dent.draw(ctx);
@@ -36,19 +36,23 @@
     var moon = new Dot(orbit, 7);
     var pointer = new Dot(mouse, 5)
     var figures = [ring, moon]
+    // figures.push(new Ring(ring.dents[0].center, ring.dents[0].r)) // test if dent center is ok
+    let chosen_r = 30
+    ring.dents[0].r = chosen_r
+    figures.push(new Ring(ring.dents[0].center, chosen_r)) // test if dent r setting is ok
 
     c.addEventListener("mousemove", function(e) {
         mouse.x = e.clientX - crect.left;
         mouse.y = e.clientY - crect.top;
     });
     var click = false
-    var phase = 0
     c.addEventListener("click", function(e) {
         click = true
     });
 
-    drawing = null
 
+    placers[Modes.DENT].parent = ring
+    placers[Modes.RING].parent = ring
 
     let start = Date.now(); // remember start time
     let timer = setInterval(function() {
@@ -57,39 +61,19 @@
         ctx.strokeStyle = "black"
         ctx.fillStyle = "black"
 
-        if(drawMode == Modes.RING){
-            drawing = drawing ?? new Ring(mouse, 30)
-            if(phase == 1){
-                let r = xy_to_r(drawing.center.x - mouse.x, drawing.center.y - mouse.y)
-                drawing.r = r>5 ? r : drawing.r
-            }
-            drawing.draw(ctx)
+        if(placers[drawMode] != null){
+            let placer = placers[drawMode]
+            placer.update(mouse)
+            placer.draw(ctx)
             if(click){
-                if(phase == 0){
-                    drawing.center = ring.pointAsRingAttached(drawing.center)
-                    phase = 1
-                }
-                else{
-                    figures.push(drawing)
-                    drawing = null
-                    phase = 0
-                }
+                placer.on_click(figures)
             }
         }
 
-        let a = xy_to_angle(center.x - mouse.x, center.y - mouse.y)
-        if(drawMode == Modes.DENT){
-            d = ring.dents[0]
-            dr = (d.end - d.start)/2.
-            d.start = a-dr
-            d.end = a+dr
-            orbit.angle = a
-        }
-
-        if(drawMode == Modes.SELECT){
-            ring.r = 200 + 15 * Math.sin(timePassed/300)
-            ctx.strokeStyle = "blue"
-        }
+        // if(drawMode == Modes.SELECT){
+        //     ring.r = 200 + 15 * Math.sin(timePassed/300)
+        //     ctx.strokeStyle = "blue"
+        // }
 
         figures.forEach(f =>{
             f.draw(ctx)
