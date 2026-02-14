@@ -27,7 +27,7 @@
     center = new Point(250, 250);
     ring = new Ring(center, 200);
     // dent = new Dent(ring, 0, to_rad(40), 6);
-    ring.addDent( to_rad(40), to_rad(60), 20)
+    ring.addDent( to_rad(40), to_rad(60), -2)
     // ring.addDent( to_rad(140), to_rad(230), 10)
     // ring.addDent( to_rad(270), to_rad(290), 30)
     // dent.draw(ctx);
@@ -37,7 +37,7 @@
     var pointer = new Dot(mouse, 5)
     var figures = [ring, moon]
     // figures.push(new Ring(ring.dents[0].center, ring.dents[0].r)) // test if dent center is ok
-    let chosen_r = 30
+    let chosen_r = 15
     ring.dents[0].r = chosen_r
     figures.push(new Ring(ring.dents[0].center, chosen_r)) // test if dent r setting is ok
 

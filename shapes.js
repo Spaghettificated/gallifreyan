@@ -158,8 +158,15 @@ class Dent {
 		// this.radius = radius
 		this.parent = parent
 		this.start = start
-		this.end = end
+		this._end = end
 		this.depth = depth
+	}
+	get end() { return this._end}
+	set end(e){
+		while(e < this.start){
+			e+=to_rad(360)
+		}
+		this._end = e
 	}
 	startPoint() {
 		return this.parent.pointFromEdge(0, this.start)

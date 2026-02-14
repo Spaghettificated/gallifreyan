@@ -82,6 +82,7 @@ class DentPlacer{
 			let theta = (this.sketch.end - this.sketch.stare)/2
 			this.sketch.depth = this.parent.r * Math.cos(theta) - dist
 			this.sketch.depth = Math.sqrt(this.parent.r**2 - (this.sketch.length()/2.)**2) - dist
+			this.sketch.depth = Math.max(this.sketch.depth, 1)
 		}
 		// if(this.phase == 1){
 		// 	let r = xy_to_r(this.sketch.center.x - mouse.x, this.sketch.center.y - mouse.y)
@@ -103,7 +104,7 @@ class DentPlacer{
 		}
 	}
 	draw(ctx){
-		this.sketch.draw(ctx)
+		// this.sketch.draw(ctx)
 	}
 }
 
