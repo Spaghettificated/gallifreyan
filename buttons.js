@@ -1,6 +1,15 @@
 
 // var drawMode = null;
 
+function setDrawMode(mode){
+	if(mode != drawMode && drawMode != null){
+        let placer = placers[drawMode]
+        if(placer != null){
+            placer.reset()
+        }
+	}
+	return mode
+}
 
 const modeButtons = document.querySelectorAll('.mode-button');
 modeButtons.forEach(b => {
@@ -16,7 +25,8 @@ function setActive(btn) {
     if (btn) {
         btn.classList.add('active');
         btn.style.backgroundColor = '#4CAF50';
-        drawMode = btn.dataset.mode;
+        // drawMode = btn.dataset.mode;
+        drawMode = setDrawMode(btn.dataset.mode)
     } else {
         drawMode = null;
     }

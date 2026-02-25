@@ -18,8 +18,8 @@ class RingPlacer{
 		this.sketch = null
 		this.phase = 0
 	}
-	reset(mouse){
-		this.sketch = new Ring(mouse, 30)
+	reset(){
+		this.sketch = null
 		this.phase = 0
 	}
 	update(mouse){
@@ -56,7 +56,7 @@ class DentPlacer{
 		}
 		return null
 	}
-	reset(mouse){
+	reset(){
 		if(this.sketch != null){
 			this.parent.dents.pop(this.sketch_id)
 		}
@@ -109,7 +109,8 @@ class DentPlacer{
 }
 
 
-placers = []
+var placers = []
 placers[Modes.SELECT] = null
 placers[Modes.DENT] = new DentPlacer(null)
 placers[Modes.RING] = new RingPlacer(null)
+var drawMode = Modes.SELECT
