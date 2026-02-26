@@ -1,6 +1,6 @@
 
 // var drawMode = null;
-
+import {drawMode, setDrawMode, Modes} from "./placers.js"
 
 const modeButtons = document.querySelectorAll('.mode-button');
 modeButtons.forEach(b => {
@@ -17,9 +17,9 @@ function setActive(btn) {
         btn.classList.add('active');
         btn.style.backgroundColor = '#4CAF50';
         // drawMode = btn.dataset.mode;
-        drawMode = setDrawMode(btn.dataset.mode)
+        setDrawMode(btn.dataset.mode)
     } else {
-        drawMode = null;
+        setDrawMode(null)
     }
 }
 modeButtons.forEach(btn => {

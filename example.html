@@ -15,18 +15,17 @@
     <canvas id="myCanvas" width="1000" height="500" style="border:1px solid grey"></canvas>
 </div>
 
-<script src="placers.js"></script>
-<script src="shapes.js"></script>
-<script src="buttons.js"></script>
-<script>
-
+<script src="buttons.js" type="module"></script>
+<script type="module">
+    import {placers, drawMode, Modes} from "./placers.js"
+    import {Ring,Dent,Dot,Point} from "./shapes.js"
     const c = document.getElementById("myCanvas");
     const ctx = c.getContext("2d");
     const crect = c.getBoundingClientRect();
     ctx.lineWidth = 8
     ctx.lineCap = "round"; // butt round square
-    center = new Point(250, 250);
-    ring = new Ring(center, 200);
+    let center = new Point(250, 250);
+    let ring = new Ring(center, 200);
 
     // // dent = new Dent(ring, 0, to_rad(40), 6);
     // ring.addDent( to_rad(40), to_rad(60), 30)

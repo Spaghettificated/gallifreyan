@@ -1,19 +1,22 @@
-function xy_to_r(x, y) {
+export function to_rad(degrees) {
+	return Math.PI * degrees / 180
+}
+export function xy_to_r(x, y) {
 	return Math.sqrt(x**2 + y**2)
 }
-function xy_to_angle(x, y) {
+export function xy_to_angle(x, y) {
 	return Math.PI + Math.atan2(x,y)
 }
-function xy_to_polar(x, y) {
+export function xy_to_polar(x, y) {
 	return [xy_to_r(x, y), xy_to_angle(x, y)]
 }
-function polar_to_x(r, angle) {
+export function polar_to_x(r, angle) {
 	return r * Math.sin(angle)
 }
-function polar_to_y(r, angle) {
+export function polar_to_y(r, angle) {
 	return r * Math.cos(angle)
 }
-function polar_to_xy(r, angle) {
+export function polar_to_xy(r, angle) {
 	return [polar_to_x(r, angle), polar_to_y(r, angle)]
 }
 function to_canvas_angle(angle) {
@@ -29,11 +32,9 @@ function drawArc(ctx, x, y, r, sAngle, eAngle, counterclockwise = false) {
 	// ctx.arc(x, y, r, to_canvas_angle(eAngle), to_canvas_angle(sAngle), counterclockwise)
 	ctx.stroke()
 }
-function to_rad(degrees) {
-	return Math.PI * degrees / 180
-}
 
-class Point {
+
+export class Point {
 	constructor(x, y) {
 		this.x = x
 		this.y = y
@@ -52,7 +53,7 @@ class PolarPoint {
 		return this.origin.y + polar_to_y(this.r, this.angle)
 	}
 }
-class Ring {
+export class Ring {
 	constructor(center, r) {
 		this.center = center
 		this.r = r
@@ -127,7 +128,7 @@ class RingPoint {
 	}
 }
 
-class Dot {
+export class Dot {
 	constructor(center, r) {
 		this.center = center
 		this.r = r
@@ -155,7 +156,7 @@ function sides_to_angle(a, b, c) { // z twierdzenia cosinusów c**2 = a**2 + b**
 	return Math.acos(ab2cos / (2 * a * b))
 }
 
-class Dent {
+export class Dent {
 	constructor(parent, start, end, depth) {
 		// this.radius = radius
 		this.parent = parent
@@ -210,7 +211,7 @@ class Dent {
 		}
 		return [mid_angle - half_angle_size, mid_angle + half_angle_size]
 	}
-	draw() {
+	draw(ctx) {
 		// ctx.beginPath()
 		// ctx.moveTo(start.x, start.y)
 		var start = this.startPoint()

@@ -1,5 +1,5 @@
-
-const Modes = {
+import {to_rad, xy_to_angle, xy_to_r, Ring, Dent, Dot} from"./shapes.js"
+export const Modes = {
 	SELECT: 0,
 	DENT:   1,
 	RING:   2,
@@ -156,21 +156,22 @@ class DotPlacer{
 	}
 }
 
-var placers = []
+export let placers = []
 placers[Modes.SELECT] = null
 placers[Modes.DENT]  = new DentPlacer(null)
 placers[Modes.RING]  = new RingPlacer(null)
 placers[Modes.DOT]   = new DotPlacer(null, 7)
 placers[Modes.LINE]  = null
 placers[Modes.VOWEL] = null
-var drawMode = Modes.SELECT
 
-function setDrawMode(mode){
+export var drawMode = Modes.SELECT
+
+export function setDrawMode(mode){
 	if(mode != drawMode && drawMode != null){
         let placer = placers[drawMode]
         if(placer != null){
             placer.reset()
         }
 	}
-	return mode
+	drawMode = mode
 }
