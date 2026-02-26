@@ -83,10 +83,12 @@ class Ring {
 		var currentAngle = startAngle
 		var endAngle = to_rad(360) * 10000
 		var still_drawing = true
+		let dents = [...this.dents]
+		dents.sort(compareDents)
 		while(still_drawing){
 			var minAngle = to_rad(360) * 10000
 			var minDent = 0;
-			this.dents.forEach(dent => {
+			dents.forEach(dent => {
 				if(dent.start > currentAngle && dent.start < minAngle){
 					if(Math.abs(startAngle - currentAngle) < 0.01){
 						startAngle = dent.start
@@ -219,6 +221,11 @@ class Dent {
 		// ctx.arc(10, 20, 30, 0, 1)
 		// ctx.stroke()
 	}
+}
+function compareDents(a,b){
+  if (a.start >  b.start) return 1;
+  if (a.start == b.start) return 0;
+  if (a.start <  b.start) return -1;
 }
 
 // class Dent {

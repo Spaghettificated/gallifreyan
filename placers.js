@@ -164,3 +164,13 @@ placers[Modes.DOT]   = new DotPlacer(null, 7)
 placers[Modes.LINE]  = null
 placers[Modes.VOWEL] = null
 var drawMode = Modes.SELECT
+
+function setDrawMode(mode){
+	if(mode != drawMode && drawMode != null){
+        let placer = placers[drawMode]
+        if(placer != null){
+            placer.reset()
+        }
+	}
+	return mode
+}

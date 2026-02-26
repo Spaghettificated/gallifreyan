@@ -1,15 +1,6 @@
 
 // var drawMode = null;
 
-function setDrawMode(mode){
-	if(mode != drawMode && drawMode != null){
-        let placer = placers[drawMode]
-        if(placer != null){
-            placer.reset()
-        }
-	}
-	return mode
-}
 
 const modeButtons = document.querySelectorAll('.mode-button');
 modeButtons.forEach(b => {
