@@ -54,7 +54,7 @@ class DentPlacer{
 		this.phase = 0
 	}
 	get sketch(){
-		if(this.parent != null && this.sketch_id){
+		if(this.parent != null && this.sketch_id != null){
 			return this.parent.dents[this.sketch_id]
 		}
 		return null
