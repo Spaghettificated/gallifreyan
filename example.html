@@ -11,6 +11,7 @@
         <button class="mode-button" data-mode=0 data-keybind="1" style ="width: 80px"> select </button>
         <button class="mode-button" data-mode=1 data-keybind="2" style ="width: 80px"> dent </button>
         <button class="mode-button" data-mode=2 data-keybind="3" style ="width: 80px"> ring </button>
+        <button class="mode-button" data-mode=3 data-keybind="4" style ="width: 80px"> dot </button>
     </div>
     <canvas id="myCanvas" width="1000" height="500" style="border:1px solid grey"></canvas>
 </div>
@@ -53,6 +54,7 @@
 
     placers[Modes.DENT].parent = ring
     placers[Modes.RING].parent = ring
+    placers[Modes.DOT].parent = ring
 
     let start = Date.now(); // remember start time
     let timer = setInterval(function() {

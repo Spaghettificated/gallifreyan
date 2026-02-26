@@ -3,6 +3,9 @@ const Modes = {
 	SELECT: 0,
 	DENT:   1,
 	RING:   2,
+	DOT:    3,
+	LINE:   4,
+	VOWEL:  5,
 }
 
 class PlacementPosition{
@@ -107,10 +110,57 @@ class DentPlacer{
 		// this.sketch.draw(ctx)
 	}
 }
+class DotPlacer{
+	constructor(parent, r) {
+		this.parent = parent
+		this.sketch = null
+		this.phase = 0
+		this.r = r
+	}
+	reset(){
+		this.sketch = null
+		this.phase = 0
+	}
+	update(mouse){
+		
+		let point = mouse
 
+		if(this.parent != null){
+			point = this.parent.pointAsRingAttached(mouse)
+			// point.r = this.r  + 5
+			let limit = 2*this.r + 15
+			point.r = Math.min(point.r, limit)
+			point.r = Math.max(point.r, -limit)
+		}
+		this.sketch = this.sketch ?? new Dot(mouse, this.r)
+		this.sketch.center = point
+
+		// if(this.phase == 1){
+		// 	let r = xy_to_r(this.sketch.center.x - mouse.x, this.sketch.center.y - mouse.y)
+		// 	this.sketch.r = r>5 ? r : this.sketch.r
+		// }
+	}
+	on_click(figures){
+		// if(this.phase == 0){
+		// 	this.sketch.center = this.parent.pointAsRingAttached(this.sketch.center)
+		// 	this.phase = 1
+		// }
+		// else{
+			figures.push(this.sketch)
+			this.sketch = null
+		// 	this.phase = 0
+		// }
+	}
+	draw(ctx){
+		this.sketch.draw(ctx)
+	}
+}
 
 var placers = []
 placers[Modes.SELECT] = null
-placers[Modes.DENT] = new DentPlacer(null)
-placers[Modes.RING] = new RingPlacer(null)
+placers[Modes.DENT]  = new DentPlacer(null)
+placers[Modes.RING]  = new RingPlacer(null)
+placers[Modes.DOT]   = new DotPlacer(null, 7)
+placers[Modes.LINE]  = null
+placers[Modes.VOWEL] = null
 var drawMode = Modes.SELECT
