@@ -78,6 +78,10 @@ export class Ring {
 		return this.dents.length - 1
 	}
 	draw(ctx) {
+		if(this.dents.length==0){
+			drawArc(ctx, this.center.x, this.center.y, this.r, 0, 2*Math.PI)
+			return
+		}
 		var start = this.pointFromEdge(0, 0)
 		ctx.moveTo(start.x, start.y)
 		var startAngle = -to_rad(360) * 10000
