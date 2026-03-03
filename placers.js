@@ -1,4 +1,4 @@
-import {to_rad, xy_to_angle, xy_to_r, Ring, Dent, Dot} from"./shapes.js"
+import {to_rad, xy_to_angle, xy_to_r, Ring, Dent, Dot} from "./shapes.js"
 export const Modes = {
 	SELECT: 0,
 	DENT:   1,

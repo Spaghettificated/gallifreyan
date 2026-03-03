@@ -1,6 +1,8 @@
 import {placers, drawMode, Modes} from "./placers.js"
 import {Ring,Dent,Dot,Point} from "./shapes.js"
 const c = document.getElementById("scribe");
+let color = getComputedStyle(c).color;
+console.log("color: ", color)
 const ctx = c.getContext("2d");
 const crect = c.getBoundingClientRect();
 ctx.lineWidth = 8
@@ -24,14 +26,15 @@ c.addEventListener("click", function(e) {
 
 placers[Modes.DENT].parent = ring
 placers[Modes.RING].parent = ring
-placers[Modes.DOT].parent = ring
+placers[Modes.DOT].parent  = ring
+
 
 let start = Date.now(); // remember start time
 let timer = setInterval(function() {
     let timePassed = Date.now() - start;
     ctx.clearRect(0, 0, c.width, c.height);
-    ctx.strokeStyle = "black"
-    ctx.fillStyle = "black"
+    ctx.strokeStyle = color
+    ctx.fillStyle = color
 
     if(placers[drawMode] != null){
         let placer = placers[drawMode]
@@ -42,18 +45,9 @@ let timer = setInterval(function() {
         }
     }
 
-    // if(drawMode == Modes.SELECT){
-    //     ring.r = 200 + 15 * Math.sin(timePassed/300)
-    //     ctx.strokeStyle = "blue"
-    // }
-
     figures.forEach(f =>{
         f.draw(ctx)
     })
-
-
-    // ctx.fillStyle = "red"
-    // pointer.draw(ctx)
     
     click = false
 }, 20);
