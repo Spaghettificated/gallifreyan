@@ -1,4 +1,6 @@
 :root{
+    /* palette: https://lospec.com/palette-list/neon-space*/
+    --dark-background_color: #1a1330; /* not in the palette*/
     --background_color: #352a55;
     --field_color: #3e3264;
     --field-highlight-color: #0188a5;
@@ -7,6 +9,7 @@
     --highlight_color: #fffdff;
 }
 
+/* font: https://www.dafont.com/typo-round.font */
 @font-face {
   font-family: roundFont;
   src: url("fonts/typo_round/Typo_Round_Regular_Demo.otf");
@@ -25,20 +28,29 @@
 * {
     font-family: roundFont;
     color: var(--element_color);
-    text-shadow: 1px 0px var(--edge_color);
+    text-shadow: 1px 1px 3px var(--edge_color);
 }
 
 body {
-    background-color: var(--background_color);
+    background-color: var(--dark-background_color);
 }
 button {
     background-color: var(--field_color);
+    border: 1px solid var(--element_color);
+    border-radius: 5px;
+    box-shadow: 0px 0px 3px var(--edge_color);
 }
 button.chosen {
     background-color: var(--field-highlight-color);
+    color: var(--highlight_color);
+    size: 100%;
+}
+button:hover{
+    box-shadow: 0px 0px 9px var(--edge_color);
 }
 canvas{
     background-color: var(--field_color);
     border: 3px solid var(--element_color);
     border-radius: 50%;
+    box-shadow: 0px 0px 15px var(--edge_color);
 }
