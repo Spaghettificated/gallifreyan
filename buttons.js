@@ -10,13 +10,10 @@ modeButtons.forEach(b => {
 });
 function setActive(btn) {
     modeButtons.forEach(b => {
-        b.classList.remove('active');
-        b.style.backgroundColor = '';
+        b.classList.remove('chosen');
     });
     if (btn) {
-        btn.classList.add('active');
-        btn.style.backgroundColor = '#4CAF50';
-        // drawMode = btn.dataset.mode;
+        btn.classList.add('chosen');
         setDrawMode(btn.dataset.mode)
     } else {
         setDrawMode(null)

@@ -1,0 +1,44 @@
+:root{
+    --background_color: #352a55;
+    --field_color: #3e3264;
+    --field-highlight-color: #0188a5;
+    --element_color: #ffd080;
+    --edge_color: #ff9e7d;
+    --highlight_color: #fffdff;
+}
+
+@font-face {
+  font-family: roundFont;
+  src: url("fonts/typo_round/Typo_Round_Regular_Demo.otf");
+}
+@font-face {
+  font-family: roundFont;
+  src: url("fonts/typo_round/Typo_Round_Bold_Demo.otf");
+  font-weight: bold;
+}
+@font-face {
+  font-family: roundFont;
+  src: url("fonts/typo_round/Typo_Round_Italic_Demo.otf");
+  font-style: italic;
+}
+
+* {
+    font-family: roundFont;
+    color: var(--element_color);
+    text-shadow: 1px 0px var(--edge_color);
+}
+
+body {
+    background-color: var(--background_color);
+}
+button {
+    background-color: var(--field_color);
+}
+button.chosen {
+    background-color: var(--field-highlight-color);
+}
+canvas{
+    background-color: var(--field_color);
+    border: 3px solid var(--element_color);
+    border-radius: 50%;
+}
