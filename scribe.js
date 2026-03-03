@@ -1,13 +1,17 @@
 import {placers, drawMode, Modes} from "./placers.js"
 import {Ring,Dent,Dot,Point} from "./shapes.js"
+
+
 const c = document.getElementById("scribe");
 let color = getComputedStyle(c).color;
-console.log("color: ", color)
+let border = getComputedStyle(c).getPropertyValue('border-width').slice(0, -2)
 const ctx = c.getContext("2d");
 const crect = c.getBoundingClientRect();
+console.log("crect: ", crect)
+console.log("border: ", border)
 ctx.lineWidth = 8
 ctx.lineCap = "round"; // butt round square
-let center = new Point(250, 250);
+let center = new Point(crect.width/2 - border, (crect.height)/2 - border);
 let ring = new Ring(center, 200);
 ring.draw(ctx)
 
@@ -15,8 +19,10 @@ ring.draw(ctx)
 var mouse = new Point(0,0)
 var figures = [ring]
 c.addEventListener("mousemove", function(e) {
-    mouse.x = e.clientX - crect.left;
-    mouse.y = e.clientY - crect.top;
+    // mouse.x = e.clientX - crect.left - border;
+    // mouse.y = e.clientY - crect.top - border;
+    mouse.x = e.clientX - crect.x - border;
+    mouse.y = e.clientY - crect.y - border;
 });
 var click = false
 c.addEventListener("click", function(e) {
