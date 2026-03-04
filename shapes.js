@@ -229,11 +229,12 @@ export class Dent {
 		// ctx.arc(10, 20, 30, 0, 1)
 		// ctx.stroke()
 	}
-	ring(){
-		new Ring(this.center, this.r)
+	get ring(){
+		return new Ring(this.center, this.r)
 	}
-	isWithinDistance(point, distance){
-		return -this.ring().pointAsRingAttached(point).r <= distance
+	isWithinDistance(point, dist){
+		// return -this.ring().pointAsRingAttached(point).r <= distance
+		return distance(this.center, point) - this.r <= dist
 	}
 }
 function compareDents(a,b){

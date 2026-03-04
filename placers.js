@@ -57,28 +57,35 @@ class RingPlacer{
 	}
 }
 class DentPlacer{
-	constructor(parent) {
-		this.parent = parent
+	constructor(word) {
+		this.word = word
 		this.sketch_id = null
 		this.phase = 0
 	}
 	get sketch(){
-		if(this.parent != null && this.sketch_id != null){
-			return this.parent?.dents[this.sketch_id]
+		if(this.word != null && this.sketch_id != null){
+			return this.word?.shape?.dents[this.sketch_id]
 		}
 		return null
 	}
 	reset(){
 		if(this.sketch != null){
-			this.parent?.dents.pop(this.sketch_id)
+			this.word?.shape?.dents.pop(this.sketch_id)
 		}
 		this.sketch_id = null
 		this.phase = 0
 	}
-	update(mouse){
-		if(this.parent == null) { return }
-		this.sketch_id = this.sketch_id ?? this.parent.addDent(0, to_rad(20), 40)
-		let center = this.parent?.center
+	update(mouse, cursor){
+		if(cursor.word == null) { 
+			this.reset()
+			return 
+		}
+		this.word = cursor.word
+
+		// if(this.parent == null) { return }
+		// this.sketch_id = this.sketch_id ?? this.parent.addDent(0, to_rad(20), 40)
+		this.sketch_id = this.sketch_id ?? this.word.shape.addDent(0, to_rad(20), 40)
+		let center = this.word.shape.center
 		let a = xy_to_angle(center.x - mouse.x, center.y - mouse.y)
 		if(this.phase==0){
 			let delta = this.sketch.end - this.sketch.start
@@ -89,12 +96,13 @@ class DentPlacer{
 			this.sketch.end = a
 		}
 		else if(this.phase==2){
+			let parent = this.word?.shape
 			// let center = this.sketch.center
 			// this.sketch.r = xy_to_r(mouse.x - center.x, mouse.y - center.y)
-			let dist = xy_to_r(mouse.x - this.parent.center.x, mouse.y - this.parent.center.y)
+			let dist = xy_to_r(mouse.x - parent.center.x, mouse.y - parent.center.y)
 			let theta = (this.sketch.end - this.sketch.stare)/2
-			this.sketch.depth = this.parent.r * Math.cos(theta) - dist
-			this.sketch.depth = Math.sqrt(this.parent.r**2 - (this.sketch.length()/2.)**2) - dist
+			this.sketch.depth = parent.r * Math.cos(theta) - dist
+			this.sketch.depth = Math.sqrt(parent.r**2 - (this.sketch.length()/2.)**2) - dist
 			this.sketch.depth = Math.max(this.sketch.depth, 1)
 		}
 		// if(this.phase == 1){
@@ -112,6 +120,8 @@ class DentPlacer{
 		}
 		else{
 			// figures.push(this.sketch)
+			this.word.letters.push(new Consonant(this.word, this.sketch))
+			// this.word.letters.push()
 			this.sketch_id = null
 			this.phase = 0
 		}
@@ -136,7 +146,10 @@ class DotPlacer{
 		let point = mouse
 
 		if(this.parent != null){
-			point = this.parent.pointAsRingAttached(mouse)
+			// point = this.parent.pointAsRingAttached(mouse)
+			let ring = this.parent.ring ?? this.parent // for dents too
+			point = ring.pointAsRingAttached(mouse)
+
 			let limit = 2*this.r + 5
 			point.r = Math.min(point.r, limit)
 			point.r = Math.max(point.r, -limit)
