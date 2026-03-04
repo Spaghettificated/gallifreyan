@@ -77,6 +77,9 @@ export class Ring {
 		this.dents.push(new Dent(this, sAngle, eAngle, depth)) 
 		return this.dents.length - 1
 	}
+	isWithinDistance(point, distance){
+		return -this.pointAsRingAttached(point).r <= distance
+	}
 	draw(ctx) {
 		if(this.dents.length==0){
 			drawArc(ctx, this.center.x, this.center.y, this.r, 0, 2*Math.PI)
@@ -226,39 +229,15 @@ export class Dent {
 		// ctx.arc(10, 20, 30, 0, 1)
 		// ctx.stroke()
 	}
+	ring(){
+		new Ring(this.center, this.r)
+	}
 }
 function compareDents(a,b){
   if (a.start >  b.start) return 1;
   if (a.start == b.start) return 0;
   if (a.start <  b.start) return -1;
 }
-
-// class Dent {
-//     constructor(parent, polar, radius){
-//         // this.radius = radius
-//         this.center = polar
-//         this.parent = parent
-// 		this.ring = new Ring(radius)
-//     }
-// 	get r(){
-// 		return this.ring
-// 	}
-//     angles(){
-//         let half_angle_size = sides_to_angle(this.center.radius, this.radius, this.parent.radius)
-//         if(this.radius + this.center.radius > this.parent.radius){
-//             half_angle_size = Math.PI - half_angle_size
-//         }
-//         return [this.center.angle - half_angle_size, this.center.angle + half_angle_size]
-//     }
-//     parent_angles(){
-//         let half_angle_size = sides_to_angle(this.center.radius, this.parent.radius, this.radius)
-//         return [this.center.angle - half_angle_size, this.center.angle + half_angle_size]
-//     }
-// }
-
-
-
-
 
 class Polar {
 	constructor(radius, angle) {

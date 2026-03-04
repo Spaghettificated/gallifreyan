@@ -25,8 +25,11 @@ class RingPlacer{
 		this.sketch = null
 		this.phase = 0
 	}
-	update(mouse){
+	update(mouse, cursor){
 		this.sketch = this.sketch ?? new Ring(mouse, 30)
+		if(this.phase == 0){
+			this.parent = cursor.word?.shape
+		}
 		if(this.phase == 1){
 			let r = xy_to_r(this.sketch.center.x - mouse.x, this.sketch.center.y - mouse.y)
 			this.sketch.r = r>5 ? r : this.sketch.r
@@ -44,7 +47,9 @@ class RingPlacer{
 		}
 	}
 	draw(ctx){
-		this.sketch.draw(ctx)
+		if(this.parent != null){
+			this.sketch.draw(ctx)
+		}
 	}
 }
 class DentPlacer{
@@ -55,20 +60,21 @@ class DentPlacer{
 	}
 	get sketch(){
 		if(this.parent != null && this.sketch_id != null){
-			return this.parent.dents[this.sketch_id]
+			return this.parent?.dents[this.sketch_id]
 		}
 		return null
 	}
 	reset(){
 		if(this.sketch != null){
-			this.parent.dents.pop(this.sketch_id)
+			this.parent?.dents.pop(this.sketch_id)
 		}
 		this.sketch_id = null
 		this.phase = 0
 	}
 	update(mouse){
+		if(this.parent == null) { return }
 		this.sketch_id = this.sketch_id ?? this.parent.addDent(0, to_rad(20), 40)
-		let center = this.parent.center
+		let center = this.parent?.center
 		let a = xy_to_angle(center.x - mouse.x, center.y - mouse.y)
 		if(this.phase==0){
 			let delta = this.sketch.end - this.sketch.start
@@ -121,37 +127,28 @@ class DotPlacer{
 		this.sketch = null
 		this.phase = 0
 	}
-	update(mouse){
-		
+	update(mouse, cursor){
+		this.parent = cursor.letter?.shape
 		let point = mouse
 
 		if(this.parent != null){
 			point = this.parent.pointAsRingAttached(mouse)
-			// point.r = this.r  + 5
-			let limit = 2*this.r + 15
+			let limit = 2*this.r + 10
 			point.r = Math.min(point.r, limit)
 			point.r = Math.max(point.r, -limit)
 		}
 		this.sketch = this.sketch ?? new Dot(mouse, this.r)
 		this.sketch.center = point
 
-		// if(this.phase == 1){
-		// 	let r = xy_to_r(this.sketch.center.x - mouse.x, this.sketch.center.y - mouse.y)
-		// 	this.sketch.r = r>5 ? r : this.sketch.r
-		// }
 	}
 	on_click(figures){
-		// if(this.phase == 0){
-		// 	this.sketch.center = this.parent.pointAsRingAttached(this.sketch.center)
-		// 	this.phase = 1
-		// }
-		// else{
+		if (this.parent != null){
 			figures.push(this.sketch)
 			this.sketch = null
-		// 	this.phase = 0
-		// }
+		}
 	}
 	draw(ctx){
+		if(this.parent != null)
 		this.sketch.draw(ctx)
 	}
 }

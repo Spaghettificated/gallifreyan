@@ -1,5 +1,6 @@
 import {placers, drawMode, Modes} from "./placers.js"
 import {Ring,Dent,Dot,Point} from "./shapes.js"
+import {Word, Consonant} from "./words.js"
 
 
 const c = document.getElementById("scribe");
@@ -34,6 +35,18 @@ placers[Modes.DENT].parent = ring
 placers[Modes.RING].parent = ring
 placers[Modes.DOT].parent  = ring
 
+let words = [new Word(ring)]
+let cursor = {
+    word: null,
+    letter: null
+}
+
+words[0].letters = [
+    new Consonant(
+        words[0],
+        new Ring(ring.pointFromEdge(50,1), 30)
+    )
+]
 
 let start = Date.now(); // remember start time
 let timer = setInterval(function() {
@@ -42,9 +55,32 @@ let timer = setInterval(function() {
     ctx.strokeStyle = color
     ctx.fillStyle = color
 
+   words.some(word => {
+        if(word.shape.isWithinDistance(mouse, 10)){
+            cursor.word = word
+            return true;
+        }
+        cursor.word = null
+        return false
+    });
+    
+    cursor.word?.letters.some(letter => {
+            if(letter.shape.isWithinDistance(mouse, 50)){
+            cursor.letter = letter
+            return true;
+        }
+        cursor.letter = null
+        return false
+    })
+    console.log("letter", cursor.letter)
+
+    placers[Modes.DENT].parent = cursor.word?.shape
+    placers[Modes.RING].parent = cursor.word?.shape
+    placers[Modes.DOT].parent  = cursor.word?.shape
+
     if(placers[drawMode] != null){
         let placer = placers[drawMode]
-        placer.update(mouse)
+        placer.update(mouse, cursor)
         placer.draw(ctx)
         if(click){
             placer.on_click(figures)
@@ -53,6 +89,13 @@ let timer = setInterval(function() {
 
     figures.forEach(f =>{
         f.draw(ctx)
+    })
+
+    words.forEach(word => {
+        word.shape.draw(ctx)
+        word.letters.forEach(letter => {
+            letter.shape.draw(ctx)
+        })
     })
     
     click = false
