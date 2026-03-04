@@ -30,11 +30,6 @@ c.addEventListener("click", function(e) {
     click = true
 });
 
-
-placers[Modes.DENT].parent = ring
-placers[Modes.RING].parent = ring
-placers[Modes.DOT].parent  = ring
-
 let words = [new Word(ring)]
 let cursor = {
     word: null,
@@ -75,7 +70,7 @@ let timer = setInterval(function() {
     console.log("letter", cursor.letter)
 
     placers[Modes.DENT].parent = cursor.word?.shape
-    placers[Modes.RING].parent = cursor.word?.shape
+    // placers[Modes.RING].word = cursor.word
     placers[Modes.DOT].parent  = cursor.word?.shape
 
     if(placers[drawMode] != null){

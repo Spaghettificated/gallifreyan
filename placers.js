@@ -1,4 +1,5 @@
 import {to_rad, xy_to_angle, xy_to_r, Ring, Dent, Dot} from "./shapes.js"
+import { Consonant } from "./words.js"
 export const Modes = {
 	SELECT: 0,
 	DENT:   1,
@@ -16,8 +17,8 @@ class PlacementPosition{
 }
 
 class RingPlacer{
-	constructor(parent) {
-		this.parent = parent
+	constructor(word) {
+		this.word = word
 		this.sketch = null
 		this.phase = 0
 	}
@@ -28,7 +29,7 @@ class RingPlacer{
 	update(mouse, cursor){
 		this.sketch = this.sketch ?? new Ring(mouse, 30)
 		if(this.phase == 0){
-			this.parent = cursor.word?.shape
+			this.word = cursor.word
 		}
 		if(this.phase == 1){
 			let r = xy_to_r(this.sketch.center.x - mouse.x, this.sketch.center.y - mouse.y)
@@ -36,18 +37,21 @@ class RingPlacer{
 		}
 	}
 	on_click(figures){
+		let parent = this.word?.shape;
+		if (parent==null) {return}
 		if(this.phase == 0){
-			this.sketch.center = this.parent.pointAsRingAttached(this.sketch.center)
+			this.sketch.center = parent.pointAsRingAttached(this.sketch.center)
 			this.phase = 1
 		}
 		else{
-			figures.push(this.sketch)
+			// figures.push(this.sketch)
+			this.word.letters.push(new Consonant(this.word, this.sketch))
 			this.sketch = null
 			this.phase = 0
 		}
 	}
 	draw(ctx){
-		if(this.parent != null){
+		if(this.word != null){
 			this.sketch.draw(ctx)
 		}
 	}
@@ -133,7 +137,7 @@ class DotPlacer{
 
 		if(this.parent != null){
 			point = this.parent.pointAsRingAttached(mouse)
-			let limit = 2*this.r + 10
+			let limit = 2*this.r + 5
 			point.r = Math.min(point.r, limit)
 			point.r = Math.max(point.r, -limit)
 		}
