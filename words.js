@@ -24,6 +24,9 @@ export class Word {
         this.letters.forEach(letter => {
             letter.draw(ctx)
         });
+        this.lines.forEach(line => {
+            line.draw(ctx)
+        });
     }
 }
 export class Consonant{
@@ -37,6 +40,9 @@ export class Consonant{
     draw(ctx){
         ctx.lineWidth = 5
         this.shape?.draw(ctx)
+        this.lines.forEach(line => {
+            line.draw(ctx)
+        });
         ctx.lineWidth = 8
     }
 }

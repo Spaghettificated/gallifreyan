@@ -236,6 +236,20 @@ export class Dent {
 		// return -this.ring().pointAsRingAttached(point).r <= distance
 		return distance(this.center, point) - this.r <= dist
 	}
+	pointFromCenter(r, angle) {
+		return new PolarPoint(this.center, r, angle)
+	}
+	pointFromEdge(r, angle) {
+		return new RingPoint(this, r, angle)
+	}
+	pointAsCenterAttached(point){
+		let [r, angle] = xy_to_polar(this.center.x - point.x, this.center.y - point.y)
+		return this.pointFromCenter(r, angle)
+	}
+	pointAsRingAttached(point){
+		let [r, angle] = xy_to_polar(this.center.x - point.x, this.center.y - point.y)
+		return this.pointFromEdge(this.r - r, angle)
+	}
 }
 function compareDents(a,b){
   if (a.start >  b.start) return 1;
@@ -249,6 +263,7 @@ export class LineEnd{
 		this.point = point
 		this.parent = parent
 		this.other = null
+		this.markerLenght = -15
 	}
 	connect(other){
 		this.other = other
@@ -261,15 +276,18 @@ export class LineEnd{
 	}
 	draw(ctx){
 		let start = this.point
-		let parentPoint = this.parent?.pointAsCenterAttached(start)
-		parentPoint = this.parent?.pointFromCenter(parentPoint?.r - 10, parentPoint?.angle)
+		let ring = this.parent.ring ?? this.parent
+		let parentPoint = ring?.pointAsCenterAttached(start)
+		parentPoint = ring?.pointFromCenter(parentPoint?.r + this.markerLenght, parentPoint?.angle)
 		let end = (this.other?.point) ?? parentPoint
 
 		if(end != null){
+        	ctx.lineWidth = 3
 			ctx.beginPath();
 			ctx.moveTo(start.x, start.y);
 			ctx.lineTo(end.x, end.y);
 			ctx.stroke();
+        	ctx.lineWidth = 8
 		}
 	}
 }

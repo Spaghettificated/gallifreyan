@@ -1,4 +1,4 @@
-import {to_rad, xy_to_angle, xy_to_r, Ring, Dent, Dot} from "./shapes.js"
+import {to_rad, xy_to_angle, xy_to_r, Ring, Dent, Dot, LineEnd} from "./shapes.js"
 import { Consonant } from "./words.js"
 export const Modes = {
 	SELECT: 0,
@@ -169,13 +169,61 @@ class DotPlacer{
 		this.sketch.draw(ctx)
 	}
 }
+class LinePlacer{
+	constructor(parent) {
+		this.parent = parent
+		this.start = null
+		this.end = null
+		this.phase = 0
+		this.firstParent=null
+	}
+	reset(){
+		this.firstParent=null
+		this.start = null
+		this.end = null
+		this.phase = 0
+	}
+	update(mouse, cursor){
+		this.parent = cursor.letter ?? cursor.word
+		if (this.parent == null) {return}
+		let point = this.parent.shape.pointAsRingAttached(mouse)
+		point.r = 0
+		if (this.phase==0){
+			this.start = this.start ?? new LineEnd(point, this.parent.shape)
+			this.start.point = point
+			this.start.parent = this.parent.shape
+		}
+		if (this.phase==1){
+			this.end = this.end ?? this.start.makeOtherEnd(point, this.parent.shape)
+			this.end.point = point
+		}
+
+	}
+	on_click(figures){
+		if (this.parent == null){ return }
+		if (this.phase == 0){
+			this.firstParent = this.parent
+			this.phase = 1 
+		}
+		else if (this.phase == 1){
+			this.firstParent.lines.push(this.start)
+			this.parent.lines.push(this.end)
+			this.reset()
+		}
+	}
+	draw(ctx){
+		if(this.parent != null){
+			this.start.draw(ctx)
+		}
+	}
+}
 
 export let placers = []
 placers[Modes.SELECT] = null
 placers[Modes.DENT]  = new DentPlacer(null)
 placers[Modes.RING]  = new RingPlacer(null)
 placers[Modes.DOT]   = new DotPlacer(null, 7)
-placers[Modes.LINE]  = null
+placers[Modes.LINE]  = new LinePlacer(null)
 placers[Modes.VOWEL] = null
 
 export var drawMode = Modes.SELECT
