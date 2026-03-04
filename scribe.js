@@ -1,5 +1,5 @@
 import {placers, drawMode, Modes} from "./placers.js"
-import {Ring,Dent,Dot,Point} from "./shapes.js"
+import {Ring,Dent,Dot,Point, LineEnd} from "./shapes.js"
 import {Word, Consonant} from "./words.js"
 
 
@@ -43,12 +43,20 @@ words[0].letters = [
     )
 ]
 
+let l0 = new LineEnd(ring.pointFromEdge(0, 2), ring)
+let l1 = new LineEnd(ring.pointFromEdge(0, 4), ring)
+let l2 = new LineEnd(ring.pointFromEdge(0, 6), ring)
+l0.connect(l1)
+
 let start = Date.now(); // remember start time
 let timer = setInterval(function() {
     let timePassed = Date.now() - start;
     ctx.clearRect(0, 0, c.width, c.height);
     ctx.strokeStyle = color
     ctx.fillStyle = color
+    l0.draw(ctx)
+    l1.draw(ctx)
+    l2.draw(ctx)
 
    words.some(word => {
         if(word.shape.isWithinDistance(mouse, 10)){

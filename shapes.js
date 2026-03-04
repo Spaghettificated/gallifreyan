@@ -243,19 +243,34 @@ function compareDents(a,b){
   if (a.start <  b.start) return -1;
 }
 
-class Polar {
-	constructor(radius, angle) {
-		this.radius = radius
-		this.angle = angle
+
+export class LineEnd{
+	constructor(point, parent) {
+		this.point = point
+		this.parent = parent
+		this.other = null
 	}
-	x() {
-		return this.radius * Math.cos(this.angle)
+	connect(other){
+		this.other = other
+		other.other = this
 	}
-	y() {
-		return this.radius * Math.sin(this.angle)
+	makeOtherEnd(point, parent){
+		let other = new LineEnd(point, parent)
+		this.connect(other)
+		return other
 	}
-	vec() {
-		return [this.x(), this.y()]
+	draw(ctx){
+		let start = this.point
+		let parentPoint = this.parent?.pointAsCenterAttached(start)
+		parentPoint = this.parent?.pointFromCenter(parentPoint?.r - 10, parentPoint?.angle)
+		let end = (this.other?.point) ?? parentPoint
+
+		if(end != null){
+			ctx.beginPath();
+			ctx.moveTo(start.x, start.y);
+			ctx.lineTo(end.x, end.y);
+			ctx.stroke();
+		}
 	}
 }
 

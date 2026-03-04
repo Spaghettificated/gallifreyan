@@ -17,6 +17,7 @@ export class Word {
     constructor(shape){
         this.shape = shape
         this.letters = []
+        this.lines = []
     }
     draw(ctx){
         this.shape?.draw(ctx)
