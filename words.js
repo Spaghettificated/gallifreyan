@@ -18,6 +18,12 @@ export class Word {
         this.shape = shape
         this.letters = []
     }
+    draw(ctx){
+        this.shape?.draw(ctx)
+        this.letters.forEach(letter => {
+            letter.draw(ctx)
+        });
+    }
 }
 export class Consonant{
     constructor(word, shape){
@@ -26,6 +32,11 @@ export class Consonant{
         this.dots = []
         this.lines = []
         this.vowel = null
+    }
+    draw(ctx){
+        ctx.lineWidth = 5
+        this.shape?.draw(ctx)
+        ctx.lineWidth = 8
     }
 }
 export class Vowel{

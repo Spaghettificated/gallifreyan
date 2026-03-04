@@ -87,10 +87,11 @@ let timer = setInterval(function() {
     })
 
     words.forEach(word => {
-        word.shape.draw(ctx)
-        word.letters.forEach(letter => {
-            letter.shape.draw(ctx)
-        })
+        // word.shape.draw(ctx)
+        // word.letters.forEach(letter => {
+        //     letter.shape.draw(ctx)
+        // })
+        word.draw(ctx)
     })
     
     click = false

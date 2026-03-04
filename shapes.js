@@ -232,6 +232,9 @@ export class Dent {
 	ring(){
 		new Ring(this.center, this.r)
 	}
+	isWithinDistance(point, distance){
+		return -this.ring().pointAsRingAttached(point).r <= distance
+	}
 }
 function compareDents(a,b){
   if (a.start >  b.start) return 1;
